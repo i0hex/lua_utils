@@ -79,7 +79,7 @@ local function serializeTable(targetTable, tableName, depthOfTable)
     end
     
     if depthOfTable == 1 then
-        if result == "" thGGen
+        if result == "" then
             return "{}"
         end
         
