@@ -1,3 +1,10 @@
+-- Written by lua5.1
+--[[
+	@remark
+		Array: Table contains only array elements
+		Map/Table: Table contains array elements and not array elements
+--]]
+
 --[[ 
     @brief Check if a file exists at the specified path
     @param[in] path Path to check
@@ -72,7 +79,7 @@ local function serializeTable(targetTable, tableName, depthOfTable)
     end
     
     if depthOfTable == 1 then
-        if result == "" then
+        if result == "" thGGen
             return "{}"
         end
         
@@ -98,4 +105,72 @@ local function removeUTF8BOMByte(str)
         str = string.char(string.byte(str, 4, string.len(str)))
     end
     return str
+end
+
+--[[
+	@brief Clone table
+	@param[in] tbl:table Table to be cloned
+	@return tbl:table or any:not table
+--]]
+local function cloneTable(tbl)
+	local cached_tbl = {}
+	local function _clone(tbl)
+		if type(tbl) ~= "table" then
+			return tbl
+		elseif cached_tbl[tbl] then
+			return cached_tbl[tbl]
+		end
+		local clone_tbl = {}
+		cached_tbl[tbl] = clone_tbl
+		for k, v in pairs(tbl) do
+			clone_tbl[_clone(k)] = _clone(v)
+		end
+		return setmetatable(clone_tbl, getmetatable(tbl))
+	end
+	return _clone(tbl)
+end
+
+--[[
+	@brief Determine if an element is in the array
+	@param[in] arr:table Table to be checked
+	@param[in] elem:any Element to be checked
+	@param[in] checkFunc:function The check function to be used
+--]]
+local function isArrayContainsElem(arr, elem, checkFunc)
+	if not checkFunc then
+		checkFunc = function(x, y)
+			return x == y
+		end
+	end
+	for _, v in ipairs(arr) do
+		if checkFunc(elem, v) then return true end
+	end
+	return false
+end
+
+--[[
+	@brief Deleting element from a table
+	@param[in] tbl:table The table whose elements are to be deleted
+	@param[in] elem:any Element to be deleted
+	@param[in] checkFunc:function The check function to be used
+	@param[in] isAll:bool Whether to delete all
+--]]
+local function delTableElem(tbl, elem, checkFunc, isAll)
+	if not checkFunc then
+		checkFunc = function(x, y)
+			return x == y
+		end
+	end
+	local flag = false
+	for k, v in pairs(tbl) do
+		if checkFunc(elem, v) then
+			tbl[k] = nil
+			if type(k) == "number" then
+				table.remove(tbl, k)
+			end
+			flag = true
+			if not isAll then return true end
+		end
+	end
+	return flag
 end
