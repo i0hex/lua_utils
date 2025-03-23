@@ -1,1 +1,3 @@
-# my_utils_lua
+# utils_lua
+
+This repository contains some Lua utility functions.
