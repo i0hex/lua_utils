@@ -1,28 +1,17 @@
 -- Written by lua5.1
 --[[
-	@remark
-		Array: Table contains only array elements
-		Map/Table: Table contains array elements and not array elements
+	Array: Table contains only array elements
+	Map/Table: Table contains array elements and not array elements
 --]]
 
---[[ 
-    @brief Check if a file exists at the specified path
-    @param[in] path Path to check
-    @return status:boolean
---]]
+-- Check if a file exists at the specified path
 local function isFileExist(path)
     local file = io.open(path, "rb")
     if file then file:close() end
     return file ~= nil
 end
 
---[[
-    @brief Splice the given file base path, file base name and file extension
-    @param[in] fileBasePath:string File base path
-    @param[in] fileBaseName:string File base name
-    @param[in] fileExtension:string File extension
-    @return filePath:string
---]]
+-- Splice the given file base path, file base name and file extension
 local function spliceFilePath(fileBasePath, fileBaseName, fileExtension)
     if not fileBasePath or not fileBaseName or not fileExtension then return nil end
     if string.sub(fileBasePath, -1) ~= "/" then fileBasePath = fileBasePath.."/" end
@@ -30,12 +19,7 @@ local function spliceFilePath(fileBasePath, fileBaseName, fileExtension)
     return fileBasePath..fileBaseName..fileExtension
 end
 
---[[
-    @brief Copy the contents of the source file to the target file
-    @param[in] src:string Path of the source file
-    @param[in] dst:string Path of the target file
-    @return status:boolean
---]]
+-- Copy the contents of the source file to the target file
 local function copyFile(src, dst)
     local srcFile = io.open(src, "rb")
     if not srcFile then return false end
@@ -49,13 +33,7 @@ local function copyFile(src, dst)
     return true
 end
 
---[[
-    @brief Serialize table to string
-    @param[in] targetTable:table Target table
-    @param[in] tableName:string Table name
-    @param[in] depthOfTable:number Depth of table
-    @return str:string
---]]
+-- Serialize table to string
 local function serializeTable(targetTable, tableName, depthOfTable)
     assert(type(targetTable) == "table")
     depthOfTable = depthOfTable or 1
@@ -92,12 +70,7 @@ local function serializeTable(targetTable, tableName, depthOfTable)
     return result
 end
 
---[[
-    @brief Remove BOM bytes from UTF8 BOM format file
-    @param[in] str:string Contents of the UTF8 BOM format file
-    @return str:string
-    @remark There are three BOM bytes: 0xEF, 0xBB, 0xBF
---]]
+-- Remove BOM bytes from UTF8 BOM format file
 local function removeUTF8BOMByte(str)
     if string.byte(str, 1) == 239 and
         string.byte(str, 2) == 187 and
@@ -107,11 +80,7 @@ local function removeUTF8BOMByte(str)
     return str
 end
 
---[[
-	@brief Clone table
-	@param[in] tbl:table Table to be cloned
-	@return tbl:table or any:not table
---]]
+-- Clone table
 local function cloneTable(tbl)
 	local cached_tbl = {}
 	local function _clone(tbl)
@@ -130,12 +99,7 @@ local function cloneTable(tbl)
 	return _clone(tbl)
 end
 
---[[
-	@brief Determine if an element is in the array
-	@param[in] arr:table Table to be checked
-	@param[in] elem:any Element to be checked
-	@param[in] checkFunc:function The check function to be used
---]]
+-- Determine if an element is in the array
 local function isArrayContainsElem(arr, elem, checkFunc)
 	if not checkFunc then
 		checkFunc = function(x, y)
@@ -148,13 +112,7 @@ local function isArrayContainsElem(arr, elem, checkFunc)
 	return false
 end
 
---[[
-	@brief Deleting element from a table
-	@param[in] tbl:table The table whose elements are to be deleted
-	@param[in] elem:any Element to be deleted
-	@param[in] checkFunc:function The check function to be used
-	@param[in] isAll:bool Whether to delete all
---]]
+-- Deleting element from a table
 local function delTableElem(tbl, elem, checkFunc, isAll)
 	if not checkFunc then
 		checkFunc = function(x, y)
